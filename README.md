@@ -4,6 +4,9 @@ Helps to implement filtering logic depended on model type.
 *You should not confuse filtering and permission checking. If you need to get items based on user, you should probably
 use Django Permissions.*
 
+## Installation
+`pip install django-polymorphic-queryset`
+
 ## Motivation
 
 For example, your application have two models: `Product` and derived from it `PerishableProduct`:
