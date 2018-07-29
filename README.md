@@ -147,7 +147,7 @@ class PerishableProductQuerySet(ProductQuerySet):
     
     @query()
     def get_new_products(self):
-        return super().get_new_products.conditions(self) & models.Q(date_perished__lt=datetime.datetime.now())        
+        return super().get_new_products.conditions() & models.Q(date_perished__lt=datetime.datetime.now())        
 ```
 
 In this example `get_new_products` will return any `Product` that was created less than a week ago or 

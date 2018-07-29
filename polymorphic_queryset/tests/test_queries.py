@@ -1,5 +1,8 @@
 from django.test import TransactionTestCase
-from polymorphic_queryset.tests.models import Product, ExpirableProduct, Report, IntermediateReport, ArchiveReport
+from polymorphic_queryset.tests.models import (
+    Product, ExpirableProduct, Report, IntermediateReport, ArchiveReport,
+    Base, Intermediate, Derived,
+)
 
 
 class QueryTestCase(TransactionTestCase):
@@ -18,7 +21,7 @@ class QueryTestCase(TransactionTestCase):
             active_expirable_product.id
         ])
 
-    def test_intermediate_non_overridden_queryset(self):
+    def test_intermediate_query_not_overriden(self):
         report = Report.objects.create()
         deleted_report = Report.objects.create(is_deleted=True)
 
@@ -44,4 +47,19 @@ class QueryTestCase(TransactionTestCase):
         products = Product.objects.get_default_products().values_list("id", flat=True)
         self.assertListEqual(list(products), [
             product.id
+        ])
+
+    def test_intermediate_queryset_not_implemented(self):
+        base_model = Base.objects.create(name="Test Base")
+        intermediate_model = Intermediate.objects.create(name="Test Intermediate")
+        skip_intermediate_model = Derived.objects.create(
+            name="Skip Intermediate",
+            description="Test Description"
+        )
+
+        models = Base.objects.wildcard_search("test").values_list("id", flat=True)
+        self.assertListEqual(list(models), [
+            base_model.id,
+            intermediate_model.id,
+            skip_intermediate_model.id
         ])
