@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="django-polymorphic-queryset",
-    version="0.1",
+    version="0.2",
     author="Artem Yastrebkov",
     author_email="nerlin57@gmail.com",
     description="Polymorphic inheritance for Django QuerySet",
