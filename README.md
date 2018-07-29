@@ -72,7 +72,7 @@ as `PerishableProduct` with `is_perished` equal to `True` and `BrokenProduct` wi
 
 ## Solution
 This library allows you to create polymorphic querysets that takes into account all conditions in a queryset 
-hierarchy:
+hierarchy (*note that query functions belongs to class, not class instance, works as `@classmethod` decorator*):
 ```python
 from polymorphic_queryset import Queryable, query
 from django.db import models
@@ -81,7 +81,7 @@ class ProductQuerySet(Queryable, models.QuerySet):
     model_name = "Product"
 
     @query()
-    def get_active_products(self):
+    def get_active_products(cls):
         return query.all()
       
         
@@ -89,7 +89,7 @@ class PerishableProductQuerySet(ProductQuerySet):
     model_name = "PerishableProduct"
 
     @query()
-    def get_active_products(self):
+    def get_active_products(cls):
         return models.Q(is_perished=False)
 
 
@@ -97,7 +97,7 @@ class BrokenProductQuerySet(ProductQuerySet):
     model_name = "BrokenProduct"
 
     @query()
-    def get_active_products(self):
+    def get_active_products(cls):
         return models.Q(repaired=True)
 ```
 
@@ -138,7 +138,7 @@ class ProductQuerySet(Queryable, models.QuerySet):
     model_name = "Product"
 
     @query()
-    def get_new_products(self):
+    def get_new_products(cls):
         return models.Q(date_created__gte=datetime.datetime.now() - datetime.timedelta(weeks=1))
         
 
@@ -146,7 +146,7 @@ class PerishableProductQuerySet(ProductQuerySet):
     model_name = "PerishableProduct"
     
     @query()
-    def get_new_products(self):
+    def get_new_products(cls):
         return super().get_new_products.conditions() & models.Q(date_perished__lt=datetime.datetime.now())        
 ```
 
